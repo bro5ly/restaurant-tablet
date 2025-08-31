@@ -1,0 +1,119 @@
+フロントメニュー情報取得
+GET api/menu/[category]
+response category include(Menu[])
+
+GET api/menu/detail/[id]
+response Menu
+
+注文送信
+POST api/orders
+reqest order include(OrderItem[]) 
+
+状態別の注文取得
+GET api/orders/[status]
+response statusのorder[]
+
+カテゴリー別の注文を取得
+GET api/orders/category
+response category別のorderItem[]
+
+オーダーの状態を更新
+PATCH api/orders/[status]/[id]
+reqest idとstatus
+
+- WebSocket
+  -- /server.ts 
+    WebSocketのサーバーを建てる。
+  -- hooks/useSocket.ts
+    
+  -- lib/socket.ts
+    クライアント生成
+
+model Table {
+    id int @id @default(autoincriment())
+    name String @unique
+    orders Order[]
+
+    createdAt Datetime @default(now())
+}
+
+model Category {
+    id int @id @default(autoincriment())
+    categoryName string //set,single,side,drink-desert
+
+    menuList Menu[]
+    orderItems OrderItem[]
+
+    createdAt Datetime @default(now())
+}
+
+model status {
+    id int @id @default(autoincriment())
+    statusName string //pending, confirm, cooking ,ready, served
+
+    order order[]
+    orderItem orderItem[]
+
+    createdAt Datetime @default(now())
+}
+
+
+
+model Order {
+    id int @id @default(autoincriment())
+    tableId int
+    table Table @relation(fields: [tableId], references: [id])
+
+    statusId int
+    status Status @relation(fields: [statusId], references: [id])
+    
+    orderItems OrderItem[]
+
+    total int @default(0)
+
+    createdAt Datetime @default(now())
+}
+
+model OrderItem {
+    id int @id @default(autoincriment())
+
+    orderId int
+    order Order @relation(fields: [orderId], references: [id])
+
+    categoryId int
+    category Category @relation(fields: [categoryId], references: [id])
+
+    menuId int
+    menu Menu @relation(fields: [menuId], references: [id])
+
+    statusId int
+    status Status @relation(fields: [statusId], references: [id])
+
+    quantity int @default(0)
+    price int @default(0)
+    status string @default(pending)//pending,confirm,cooking,ready,served
+
+    note string?
+
+    createdAt DateTime @default(now())
+}
+
+model menu {
+    id int @id @default(autoincriment())
+
+    categoryId int
+    category Category @relation(fields: [categoryId], references: [id])
+
+    orderItems OrderItem[]
+
+    name string
+    description String?
+    image string
+
+    isActive boolean @default(true)
+    price int 
+    
+    // アレルギーとサイドメニューのテーブルとリレーションを後で追加
+    createdAt   DateTime  @default(now())
+}
+

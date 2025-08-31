@@ -1,0 +1,119 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum CategoryType {
+  SET
+  SINGLE  
+  SIDE
+  DRINK_DESERT
+}
+
+enum StatusType {
+  PENDING
+  CONFIRM
+  COOKING
+  READY
+  SERVED
+}
+
+model Table {
+    id Int @id @default(autoincrement())
+
+    name String @unique
+    orders Order[]
+
+    createdAt DateTime @default(now())
+}
+
+model Category {
+    id Int @id @default(autoincrement())
+
+    name CategoryType
+
+    menuList Menu[]
+    orderItems OrderItem[]
+
+    createdAt DateTime @default(now())
+}
+
+model Status {
+    id Int @id @default(autoincrement())
+
+    name StatusType
+
+    order Order[]
+    orderItem OrderItem[]
+
+    createdAt DateTime @default(now())
+}
+
+
+
+model Order {
+    id Int @id @default(autoincrement())
+
+    tableId Int
+    table Table @relation(fields: [tableId], references: [id])
+
+    statusId Int
+    status Status @relation(fields: [statusId], references: [id])
+    
+    orderItems OrderItem[]
+
+    total Int @default(0)
+
+    createdAt DateTime @default(now())
+}
+
+model OrderItem {
+    id Int @id @default(autoincrement())
+
+    orderId Int
+    order Order @relation(fields: [orderId], references: [id])
+
+    categoryId Int
+    category Category @relation(fields: [categoryId], references: [id])
+
+    menuId Int
+    menu Menu @relation(fields: [menuId], references: [id])
+
+    statusId Int
+    status Status @relation(fields: [statusId], references: [id])
+
+    quantity Int @default(0)
+    price Int @default(0)
+   
+
+    note String?
+
+    createdAt DateTime @default(now())
+}
+
+model Menu {
+    id Int @id @default(autoincrement())
+
+    categoryId Int
+    category Category @relation(fields: [categoryId], references: [id])
+
+    orderItems OrderItem[]
+
+    name String
+    description String?
+    image String
+
+    isActive Boolean @default(true)
+    price Int 
+    
+    // アレルギーとサイドメニューのテーブルとリレーションを後で追加
+    createdAt   DateTime  @default(now())
+}
+
