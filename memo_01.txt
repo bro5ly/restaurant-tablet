@@ -1,0 +1,215 @@
+apiとテーブルの設計は変更している可能性があるニョーん
+テーブルは/prisma/schema.prismaを参照してください。
+進捗はmemo_02.txtに記載
+
+フロントメニュー情報取得
+GET api/menu/[category]
+response [
+    {
+        category:{},
+        categoryId,
+        createdAt,
+        description,
+        id,
+        image,
+        isActive,
+        name,
+        price
+    }, 
+    {
+        ...
+    }
+]
+
+
+GET api/menu/detail/[id] (いらんかも)
+response  {
+    categoryId,
+    createdAt,
+    description,
+    id,
+    image,
+    isActive,
+    name,
+    price
+}, 
+   
+ 
+注文送信
+POST api/orders
+reqest [
+    {
+        categoryId,
+        menuId,
+        quantity,
+        statusId,
+        price
+    },
+    {
+        ...
+    }
+]
+
+response {
+    status,
+    orderId
+}
+
+
+<-------------- できていない↓ -------------->
+
+
+状態別の注文更新 (やってることはpatchだけど)責任分離と簡単さ重視のため3つ作成
+GET api/orders/update/cooking
+GET api/orders/update/confirm (誤操作があった時用)
+GET api/orders/update/served 
+reqest {
+    method: "GET",
+    headers: {
+        "Content-Type": application/json
+    },
+    body: JSON.stringify({
+        orderItemId,
+        status,
+        author
+    })
+}
+
+response {
+    status,
+    orderItemId
+}
+
+
+カテゴリー別の注文を取得
+GET api/orders/category
+response [
+    {
+        categoryId,
+        orderId,
+        id,
+        createdAt,
+        quantity,
+        note?,
+        menuId,
+        statusId
+    },{
+        ...
+    }
+]
+
+
+状態別に注文済み商品を取得
+GET api/orders/get/confirm
+GET api/orders/get/cooking
+GET api/orders/get/served
+response {
+    tableId,
+    orderId,
+    orderItemId,
+    status,
+    createdAt,
+    author?
+    note?
+}
+
+
+<-------------- できていない↑ -------------->
+
+- WebSocket
+  -- /server.ts 
+    broadcast関数でhttpで立てたwebsocketサーバーに通知を送る。apiで関数を呼び出す。
+  -- /websocket-server.ts
+    サーバーを建て、メッセージを接続済みクライアントに送信
+    
+
+
+
+model Table {
+    id int @id @default(autoincriment())
+    name String @unique
+    orders Order[]
+
+    createdAt Datetime @default(now())
+}
+
+model Category {
+    id int @id @default(autoincriment())
+    categoryName string //set,single,side,drink-desert
+
+    menuList Menu[]
+    orderItems OrderItem[]
+
+    createdAt Datetime @default(now())
+}
+
+model status {
+    id int @id @default(autoincriment())
+    statusName string //pending, confirm, cooking ,ready, served
+
+    order order[]
+    orderItem orderItem[]
+
+    createdAt Datetime @default(now())
+}
+
+
+
+model Order {
+    id int @id @default(autoincriment())
+    tableId int
+    table Table @relation(fields: [tableId], references: [id])
+
+    statusId int
+    status Status @relation(fields: [statusId], references: [id])
+    
+    orderItems OrderItem[]
+
+    total int @default(0)
+
+    createdAt Datetime @default(now())
+}
+
+model OrderItem {
+    id int @id @default(autoincriment())
+
+    orderId int
+    order Order @relation(fields: [orderId], references: [id])
+
+    categoryId int
+    category Category @relation(fields: [categoryId], references: [id])
+
+    menuId int
+    menu Menu @relation(fields: [menuId], references: [id])
+
+    statusId int
+    status Status @relation(fields: [statusId], references: [id])
+
+    quantity int @default(0)
+    price int @default(0)
+    status string @default(pending)//pending,confirm,cooking,ready,served
+
+    note string?
+
+    createdAt DateTime @default(now())
+}
+
+model menu {
+    id int @id @default(autoincriment())
+
+    categoryId int
+    category Category @relation(fields: [categoryId], references: [id])
+
+    orderItems OrderItem[]
+
+    name string
+    description String?
+    image string
+
+    isActive boolean @default(true)
+    price int 
+    
+    // アレルギーとサイドメニューのテーブルとリレーションを後で追加
+    createdAt   DateTime  @default(now())
+}
+
