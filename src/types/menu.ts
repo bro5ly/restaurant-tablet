@@ -1,5 +1,15 @@
 type Categories = "SET" | "SINGLE" | "SIDE" | "DRINK_DESERT";
 type Status = "PENDING" | "CONFIRM" | "COOKING" | "READY" | "SERVED";
+type AllergyType =
+  | "GLUTEN"
+  | "DAIRY"
+  | "EGG"
+  | "PEANUT"
+  | "TREE_NUTS"
+  | "SOY"
+  | "FISH"
+  | "SHELLFISH"
+  | "SESAME";
 
 export interface Table {
   id: number;
@@ -14,7 +24,13 @@ interface MenuItem {
   name: string;
   description?: string;
   image: string;
-
+  allergies: Array<{
+    id: number;
+    name: AllergyType;
+    displayName: string;
+    icon: string;
+  }>;
+  availableSides?: MenuItem[];
   price: number;
 }
 
@@ -48,3 +64,26 @@ interface OrderItem {
 }
 
 export type { MenuItem, Order, OrderItem, Categories, Status };
+
+// interface MenuItem {
+//   id: number;
+//   categoryId: number;
+//   category: {
+//     id: number;
+//     name: CategoryType;
+//     createdAt: Date;
+//   };
+//   name: string;
+//   description?: string;
+//   image: string;
+//   allergies: Array<{
+//     id: number;
+//     name: AllergyType;
+//     displayName: string;
+//     icon: string;
+//   }>;
+//   availableSides?: MenuItem[]; // サイドメニュー
+//   price: number;
+//   isActive: boolean;
+//   createdAt: Date;
+// }
