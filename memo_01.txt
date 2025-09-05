@@ -62,7 +62,7 @@ response {
 状態別の注文更新 (やってることはpatchだけど)責任分離と簡単さ重視のため3つ作成
 GET api/orders/update/cooking
 GET api/orders/update/confirm (誤操作があった時用)
-GET api/orders/update/served 
+GET api/orders/update/ready 
 reqest {
     method: "GET",
     headers: {
