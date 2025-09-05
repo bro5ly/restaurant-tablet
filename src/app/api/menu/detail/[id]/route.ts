@@ -14,6 +14,11 @@ export async function GET(
       where: {
         id: menuId,
       },
+      include: {
+        availableSides: true,
+        allergies: true,
+        category: true,
+      },
     });
 
     return NextResponse.json(menuDetail);

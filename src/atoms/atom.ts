@@ -59,12 +59,13 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
-interface CartItem {
+export interface CartItem {
   categoryId: number;
   menuId: number;
   quantity: number;
   statusId: number;
   price: number;
+  name: string;
 }
 
 export const cartAtom = atomWithStorage<CartItem[]>("cart", []);
