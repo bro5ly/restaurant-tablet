@@ -46,8 +46,11 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    broadcast(JSON.stringify({ type: "order-updated" }));
-    return NextResponse.json(createdOrder);
+    broadcast(JSON.stringify({ type: "order-updated", order: createdOrder }));
+    return NextResponse.json({
+      ...createdOrder,
+      orderNumber: `ORDER-${createdOrder.id}`
+    });
   } catch (error) {
     console.log("create-order api error:", error);
     return NextResponse.json(

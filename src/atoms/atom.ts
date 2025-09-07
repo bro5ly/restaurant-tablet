@@ -66,49 +66,60 @@ export interface CartItem {
   statusId: number;
   price: number;
   name: string;
+  cartItemId?: string;
+  groupId?: string; // 個別のカートアイテムを識別するID
 }
 
 export const cartAtom = atomWithStorage<CartItem[]>("cart", []);
 
 export const addAtom = atom(null, (get, set, item: CartItem) => {
   const cart = get(cartAtom);
-  const existing = cart.find((i) => i.menuId === item.menuId);
-  if (existing) {
-    existing.quantity += item.quantity || 1;
-    set(cartAtom, [...cart]);
-  } else {
-    set(cartAtom, [...cart, item]);
-  }
+  // 常に新しいアイテムとして追加（同一商品でも個別管理）
+  const newItem = {
+    ...item,
+    cartItemId: Date.now().toString() + Math.random().toString(36).substr(2, 9), // ユニークID生成
+  };
+  set(cartAtom, [...cart, newItem]);
 });
 
 export const removeAtom = atom(null, (get, set, item: CartItem) => {
   const cart = get(cartAtom);
+  // cartItemIdが存在する場合はそれで削除、なければmenuIdで削除
   set(
     cartAtom,
-    cart.filter((i) => i.menuId !== item.menuId)
+    cart.filter((i) =>
+      item.cartItemId
+        ? i.cartItemId !== item.cartItemId
+        : i.menuId !== item.menuId
+    )
   );
 });
 
 export const editAtom = atom(
   null,
-  (get, set, { menuId, quantity }: { menuId: number; quantity: number }) => {
+  (
+    get,
+    set,
+    { cartItemId, quantity }: { cartItemId: string; quantity: number }
+  ) => {
     const cart = get(cartAtom);
-    const existing = cart.find((i) => i.menuId === menuId);
     if (quantity <= 0) {
       set(
         cartAtom,
-        cart.filter((i) => i.menuId !== menuId)
+        cart.filter((i) => i.cartItemId !== cartItemId)
       );
     } else {
-      if (existing) {
-        existing.quantity += quantity;
-      }
       set(
         cartAtom,
         cart.map((item) =>
-          item.menuId === menuId ? { ...item, quantity } : item
+          item.cartItemId === cartItemId ? { ...item, quantity } : item
         )
       );
     }
   }
 );
+
+// カートクリア用のatom
+export const clearCartAtom = atom(null, (get, set) => {
+  set(cartAtom, []);
+});
