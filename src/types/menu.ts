@@ -39,11 +39,12 @@ interface Order {
   tableId: number;
   table: Table;
   statusId: number;
-  status: Status;
+  status: Status | { id: number; name: Status; createdAt: Date; };
   description?: string;
   orderItems: OrderItem[];
 
   total: number;
+  createdAt: Date;
 }
 
 interface OrderItem {

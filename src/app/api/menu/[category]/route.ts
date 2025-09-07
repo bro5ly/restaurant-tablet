@@ -17,6 +17,7 @@ export async function GET(
       },
       include: {
         category: true,
+        allergies: true,
       },
       orderBy: {
         id: "asc",

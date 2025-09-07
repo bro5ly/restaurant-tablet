@@ -1,28 +1,72 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { broadcast } from "../../../../../../server";
 
-export async function GET(
+export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
   const orderId = parseInt(id);
+  const { status } = await req.json();
 
   try {
-    const orderItem = await prisma.orderItem.update({
+    // Get the status ID from status name
+    const statusRecord = await prisma.status.findFirst({
+      where: {
+        name: status,
+      },
+    });
+
+    if (!statusRecord) {
+      return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+    }
+
+    // Update the order status and all its order items
+    const updatedOrder = await prisma.order.update({
       where: {
         id: orderId,
       },
       data: {
-        statusId: 3,
+        statusId: statusRecord.id,
+        orderItems: {
+          updateMany: {
+            where: {
+              orderId: orderId,
+            },
+            data: {
+              statusId: statusRecord.id,
+            },
+          },
+        },
+      },
+      include: {
+        table: true,
+        status: true,
+        orderItems: {
+          include: {
+            menu: {
+              include: {
+                category: true,
+              },
+            },
+            category: true,
+            status: true,
+          },
+        },
       },
     });
 
-    return NextResponse.json(orderItem);
+    // Broadcast the update to all connected clients
+    broadcast(
+      JSON.stringify({ type: "order-status-updated", order: updatedOrder })
+    );
+
+    return NextResponse.json(updatedOrder);
   } catch (err) {
-    console.log("orderItem api error: ", err);
+    console.log("order update api error: ", err);
     return NextResponse.json(
-      { error: "failed to fetch orderItem" },
+      { error: "failed to update order" },
       { status: 500 }
     );
   }

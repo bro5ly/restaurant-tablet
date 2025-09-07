@@ -1,18 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const status = searchParams.get("status"); // CONFIRM, COOKING, READY
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ tableId: string }> }
+) {
+  const { tableId } = await params;
 
   try {
-    console.log(`API: ${status}状態の注文を取得中...`);
+    console.log(`API: テーブル${tableId}の注文進捗を取得中...`);
     
-    // Get orders with specific status and include all necessary relations
+    // Get orders for specific table that are not served yet
     const orders = await prisma.order.findMany({
       where: {
+        tableId: parseInt(tableId),
         status: {
-          name: status as any || "CONFIRM"
+          name: {
+            in: ["CONFIRM", "COOKING", "READY"]
+          }
         }
       },
       include: {
@@ -34,18 +39,17 @@ export async function GET(req: NextRequest) {
         }
       },
       orderBy: {
-        createdAt: "asc"
+        createdAt: "desc"
       }
     });
 
-    console.log(`API: ${status}状態の注文を${orders.length}件取得しました`);
-    console.log('取得した注文:', orders.map(o => ({ id: o.id, status: o.status, itemsCount: o.orderItems.length })));
+    console.log(`API: テーブル${tableId}の注文進捗を${orders.length}件取得しました`);
 
     return NextResponse.json(orders);
   } catch (err) {
-    console.log("orders api error: ", err);
+    console.log("table orders api error: ", err);
     return NextResponse.json(
-      { error: "failed to fetch orders" },
+      { error: "failed to fetch table orders" },
       { status: 500 }
     );
   }
