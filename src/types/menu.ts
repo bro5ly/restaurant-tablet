@@ -1,4 +1,4 @@
-type Categories = "SET" | "SINGLE" | "SIDE" | "DRINK_DESERT";
+type Categories = "RECOMMENDED" | "SET" | "SINGLE" | "SIDE" | "DRINK_DESERT";
 type Status = "PENDING" | "CONFIRM" | "COOKING" | "READY" | "SERVED";
 type AllergyType =
   | "GLUTEN"
@@ -31,6 +31,7 @@ interface MenuItem {
     icon: string;
   }>;
   availableSides?: MenuItem[];
+  isRecommended?: boolean;
   price: number;
 }
 

@@ -9,12 +9,24 @@ export async function GET(
   const { category } = await params;
 
   try {
-    const categoryMenu = await prisma.menu.findMany({
-      where: {
+    let whereCondition: any = {};
+    
+    if (category === "RECOMMENDED") {
+      // おすすめカテゴリーの場合は、isRecommendedがtrueのメニューを取得
+      whereCondition = {
+        isRecommended: true,
+      };
+    } else {
+      // 通常のカテゴリーの場合
+      whereCondition = {
         category: {
           name: category,
         },
-      },
+      };
+    }
+
+    const categoryMenu = await prisma.menu.findMany({
+      where: whereCondition,
       include: {
         category: true,
         allergies: true,
