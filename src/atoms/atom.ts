@@ -123,3 +123,16 @@ export const editAtom = atom(
 export const clearCartAtom = atom(null, (get, set) => {
   set(cartAtom, []);
 });
+
+// テーブル情報とパーティーサイズを管理するatom
+export interface TableInfo {
+  tableId: number;
+  tableName: string;
+  partySize: number | null;
+}
+
+export const tableInfoAtom = atomWithStorage<TableInfo>("tableInfo", {
+  tableId: 1,
+  tableName: "テーブル 1",
+  partySize: null,
+});

@@ -2,11 +2,16 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Users, ArrowRight, X } from "lucide-react";
+import { useAtom } from "jotai";
+import { tableInfoAtom } from "@/atoms/atom";
+import { useRouter } from "next/navigation";
 
 const ModalPartySizeSelection = () => {
   const [selectedPartySize, setSelectedPartySize] = useState<number | null>(
     null
   );
+  const [tableInfo, setTableInfo] = useAtom(tableInfoAtom);
+  const router = useRouter();
 
   const partySizes = [
     { size: 1, label: "1名" },
@@ -18,24 +23,27 @@ const ModalPartySizeSelection = () => {
 
   const handleConfirm = () => {
     if (selectedPartySize) {
-      console.log(`Selected party size: ${selectedPartySize}`);
+      // テーブル情報を更新
+      setTableInfo({
+        ...tableInfo,
+        partySize: selectedPartySize,
+      });
+      // ui_testページに遷移
+      router.push('/ui_test');
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gray-100">
       <div
-        className="rounded-lg shadow-lg overflow-hidden flex flex-col relative"
+        className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col relative"
         style={{
           width: "min(1280px, 95vw)",
           height: "min(800px, 80vh)",
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800"><rect width="1280" height="800" fill="%23f3f4f6"/><rect x="100" y="100" width="200" height="150" fill="%23ef4444" rx="10"/><rect x="350" y="100" width="200" height="150" fill="%23ef4444" rx="10"/><rect x="600" y="100" width="200" height="150" fill="%23ef4444" rx="10"/><rect x="850" y="100" width="200" height="150" fill="%23ef4444" rx="10"/><rect x="100" y="300" width="200" height="150" fill="%23ef4444" rx="10"/><rect x="350" y="300" width="200" height="150" fill="%23ef4444" rx="10"/><rect x="600" y="300" width="200" height="150" fill="%23ef4444" rx="10"/><rect x="850" y="300" width="200" height="150" fill="%23ef4444" rx="10"/><rect x="100" y="500" width="200" height="150" fill="%23ef4444" rx="10"/><rect x="350" y="500" width="200" height="150" fill="%23ef4444" rx="10"/><rect x="600" y="500" width="200" height="150" fill="%23ef4444" rx="10"/><rect x="850" y="500" width="200" height="150" fill="%23ef4444" rx="10"/><text x="640" y="750" text-anchor="middle" fill="%23374151" font-family="Arial" font-size="24" font-weight="bold">Family Restaurant</text></svg>')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
         }}
       >
         {/* 上部バー */}
-        <nav className="h-14 bg-red-600 bg-opacity-90 text-white flex items-center justify-between px-6 backdrop-blur-sm">
+        <nav className="h-14 bg-red-600 text-white flex items-center justify-between px-6">
           <div className="flex items-center space-x-4">
             <h1 className="text-lg font-bold">ファミリーレストラン</h1>
             <span className="text-sm bg-red-700 px-2 py-1 rounded">

@@ -6,17 +6,23 @@ export async function GET(
   { params }: { params: Promise<{ tableId: string }> }
 ) {
   const { tableId } = await params;
+  const { searchParams } = new URL(req.url);
+  const includeServed = searchParams.get("includeServed") === "true";
 
   try {
-    console.log(`API: テーブル${tableId}の注文進捗を取得中...`);
+    console.log(`API: テーブル${tableId}の注文進捗を取得中... (配膳済み含む: ${includeServed})`);
     
-    // Get orders for specific table that are not served yet
+    // Get orders for specific table
+    const statusFilter = includeServed 
+      ? ["CONFIRM", "COOKING", "READY", "SERVED"]
+      : ["CONFIRM", "COOKING", "READY"];
+    
     const orders = await prisma.order.findMany({
       where: {
         tableId: parseInt(tableId),
         status: {
           name: {
-            in: ["CONFIRM", "COOKING", "READY"]
+            in: statusFilter
           }
         }
       },

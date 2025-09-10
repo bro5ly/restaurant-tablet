@@ -43,7 +43,7 @@ const categories = [
   },
 ];
 
-export default function page() {
+export default function TabletPage() {
   const [selectedCategory, setSelectedCategory] = useState<any>("SET");
   const { menus } = useMenus(selectedCategory);
 
