@@ -15,6 +15,7 @@ enum CategoryType {
   SINGLE  
   SIDE
   DRINK_DESERT
+  RECOMMENDED
 }
 
 enum StatusType {
@@ -128,6 +129,7 @@ model Menu {
     image String
 
     isActive Boolean @default(true)
+    isRecommended Boolean @default(false)
     price Int 
     
     // アレルギーとサイドメニューのテーブルとリレーションを後で追加

@@ -1,6 +1,7 @@
+"use client";
 import React, { useEffect } from "react";
 
-export default function page() {
+export default function OrderTestPage() {
   useEffect(() => {
     const createOrder = async () => {
       const res = await fetch("/api/orders", {
