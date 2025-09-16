@@ -22,7 +22,7 @@
 
 1. リポジトリをクローン  
    ```bash
-   git clone https://github.com/username/repository.git
+   git clone https://github.com/bro5ly/restaurant-tablet.git
    cd repository
    ```
 
