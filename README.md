@@ -5,16 +5,16 @@
 
 ---
 
-## 🎥 デモ
-![Videotogif](https://github.com/user-attachments/assets/8e3f4f23-c30f-4949-ac40-1092ba9c1fb4)
 
-![Videotogif (1)](https://github.com/user-attachments/assets/fa9d5029-047f-47c5-bc47-54ffbeda73bf)
+## 🎥 デモ
 
 ---<img width="1470" height="956" alt="スクリーンショット 2025-09-17 3 45 13" src="https://github.com/user-attachments/assets/d44a0d04-aad0-408e-87b1-26e53803c266" />
 
 <img width="1470" height="956" alt="スクリーンショット 2025-09-17 3 45 28" src="https://github.com/user-attachments/assets/7ca3af04-a854-4cb6-a987-0817a8254294" />
 
 <img width="1470" height="956" alt="スクリーンショット 2025-09-17 3 45 52" src="https://github.com/user-attachments/assets/aa04427b-bb75-46db-adeb-0b5960cd0e6d" />
+
+<img width="1470" height="956" alt="スクリーンショット 2025-09-17 3 48 16" src="https://github.com/user-attachments/assets/33e8b613-e10e-4096-9c45-ab2d5c5b2539" />
 
 ## 🚀 使い方
 
@@ -50,12 +50,16 @@ npm run dev
 
 ✨ 主な機能
 タブレットからの注文機能
+![Videotogif (1)](https://github.com/user-attachments/assets/888f8c79-8caf-4760-a0ff-4967ca4e5f76)
 
 キッチン画面での注文確認
+<img width="1470" height="956" alt="スクリーンショット 2025-09-17 3 49 56" src="https://github.com/user-attachments/assets/e109a848-e450-4aca-9b04-6aadfb28008d" />
 
 メニュー一覧・カテゴリ分け
+![Videotogif (1)](https://github.com/user-attachments/assets/616f92c8-8430-4ba2-9811-862f849808ce)
 
 シンプルな UI を意識した実装
+
 
 📚 学んだこと
 APIとDBの流れを体系的に理解し、実際に実装できた
@@ -79,3 +83,4 @@ QRコードを用いたスマホからの注文対応
 
 👤 作者 / 学生
 最近 API や DB 設計の学習を始め、本アプリで実践しました。
+jsが好きです。なんでもやります。
