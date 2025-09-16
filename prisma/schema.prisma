@@ -15,6 +15,7 @@ enum CategoryType {
   SINGLE  
   SIDE
   DRINK_DESERT
+  RECOMMENDED
 }
 
 enum StatusType {
@@ -23,6 +24,19 @@ enum StatusType {
   COOKING
   READY
   SERVED
+}
+
+enum AllergyType {
+  GLUTEN
+  DAIRY
+  EGG
+  PEANUT
+  TREE_NUTS
+  SOY
+  FISH
+  SHELLFISH
+  SESAME
+  // ...残り30種類を追加
 }
 
 model Table {
@@ -105,15 +119,31 @@ model Menu {
     category Category @relation(fields: [categoryId], references: [id])
 
     orderItems OrderItem[]
+    allergies Allergy[]
+
+    availableSides Menu[] @relation("MenuSideOptions")
+    parentMenus Menu[] @relation("MenuSideOptions")
 
     name String
     description String?
     image String
 
     isActive Boolean @default(true)
+    isRecommended Boolean @default(false)
     price Int 
     
     // アレルギーとサイドメニューのテーブルとリレーションを後で追加
     createdAt   DateTime  @default(now())
 }
 
+model Allergy {
+  id Int @id @default(autoincrement())
+  
+  menus Menu[] // many-to-many relationship
+  
+  name AllergyType @unique
+  displayName String
+  icon String
+  
+  createdAt DateTime @default(now())
+}
