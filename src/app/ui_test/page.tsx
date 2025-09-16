@@ -402,11 +402,11 @@ const UiTestPage = () => {
       );
 
       // メインアイテム: SINGLE(1) または SET(3)
-      const mainItem = sortedItems.find((item) => item.categoryId === 3);
+      const mainItem = sortedItems.find((item) => item.categoryId === 1);
 
       if (mainItem) {
         // サイドアイテム: SIDE(2) または DRINK_DESERT(4)
-        const sideItems = sortedItems.filter((item) => item.categoryId === 5);
+        const sideItems = sortedItems.filter((item) => item.categoryId === 4);
 
         result.push({
           ...mainItem,
@@ -880,7 +880,9 @@ const UiTestPage = () => {
                                     </span>
                                   </div>
                                 )}
-                                {menu.image && menu.image.startsWith("http") ? (
+                                {menu.image &&
+                                (menu.image.startsWith("http") ||
+                                  menu.image.startsWith("/images/")) ? (
                                   <img
                                     src={menu.image}
                                     alt={menu.name}
@@ -901,7 +903,8 @@ const UiTestPage = () => {
                                   style={{
                                     display:
                                       menu.image &&
-                                      menu.image.startsWith("http")
+                                      (menu.image.startsWith("http") ||
+                                        menu.image.startsWith("/images/"))
                                         ? "none"
                                         : "flex",
                                   }}
@@ -964,6 +967,16 @@ const UiTestPage = () => {
                 <ChevronRight className="w-5 h-5" />
               </Button>
             </div>
+
+            {totalPages > 1 && (
+              <div className="flex justify-center mb-3">
+                <div className="bg-black/10 px-3 py-1 rounded-full">
+                  <span className="text-sm text-gray-700 font-medium">
+                    {currentPage + 1}/{totalPages}
+                  </span>
+                </div>
+              </div>
+            )}
           </main>
 
           <aside className="w-80 bg-gray-50 border-l border-gray-200 flex flex-col">
@@ -1079,7 +1092,7 @@ const UiTestPage = () => {
                   className="flex-1"
                   onClick={() => router.push("/account")}
                 >
-                  決済
+                  会計
                 </Button>
                 <Button
                   variant="outline"
@@ -1187,12 +1200,44 @@ const UiTestPage = () => {
                   <div className="flex gap-6 mt-6 max-w-[1000px] max-h-[700px]">
                     {/* Left side - Image and basic info */}
                     <div className="flex-1">
-                      <div className="aspect-square bg-gray-100 rounded-lg mb-4 flex items-center justify-center">
-                        {detail.image ? (
-                          <div className="text-8xl">{detail.image}</div>
-                        ) : (
-                          <UtensilsCrossed className="w-24 h-24 text-gray-400" />
-                        )}
+                      <div className="aspect-square bg-gray-100 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
+                        {detail.image &&
+                        (detail.image.startsWith("http") ||
+                          detail.image.startsWith("/images/")) ? (
+                          <img
+                            src={detail.image}
+                            alt={detail.name}
+                            className="w-full h-full object-cover rounded-lg"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = "none";
+                              const nextElement =
+                                target.nextElementSibling as HTMLElement;
+                              if (nextElement)
+                                nextElement.style.display = "flex";
+                            }}
+                          />
+                        ) : null}
+                        <div
+                          className="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center text-sm text-gray-500 text-center px-4"
+                          style={{
+                            display:
+                              detail.image &&
+                              (detail.image.startsWith("http") ||
+                                detail.image.startsWith("/images/"))
+                                ? "none"
+                                : "flex",
+                          }}
+                        >
+                          {detail.image ? (
+                            <div className="text-center">
+                              <UtensilsCrossed className="w-16 h-16 text-gray-400 mx-auto mb-2" />
+                              <div className="text-xs">{detail.image}</div>
+                            </div>
+                          ) : (
+                            <UtensilsCrossed className="w-24 h-24 text-gray-400" />
+                          )}
+                        </div>
                       </div>
 
                       <div className="space-y-4">
@@ -1367,12 +1412,44 @@ const UiTestPage = () => {
                   <div className="flex gap-6 mt-6 max-w-[1000px] max-h-[700px]">
                     {/* Left side - Image and basic info */}
                     <div className="flex-1">
-                      <div className="aspect-square bg-gray-100 rounded-lg mb-4 flex items-center justify-center">
-                        {detail.image ? (
-                          <div className="text-8xl">{detail.image}</div>
-                        ) : (
-                          <UtensilsCrossed className="w-24 h-24 text-gray-400" />
-                        )}
+                      <div className="aspect-square bg-gray-100 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
+                        {detail.image &&
+                        (detail.image.startsWith("http") ||
+                          detail.image.startsWith("/images/")) ? (
+                          <img
+                            src={detail.image}
+                            alt={detail.name}
+                            className="w-full h-full object-cover rounded-lg"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = "none";
+                              const nextElement =
+                                target.nextElementSibling as HTMLElement;
+                              if (nextElement)
+                                nextElement.style.display = "flex";
+                            }}
+                          />
+                        ) : null}
+                        <div
+                          className="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center text-sm text-gray-500 text-center px-4"
+                          style={{
+                            display:
+                              detail.image &&
+                              (detail.image.startsWith("http") ||
+                                detail.image.startsWith("/images/"))
+                                ? "none"
+                                : "flex",
+                          }}
+                        >
+                          {detail.image ? (
+                            <div className="text-center">
+                              <UtensilsCrossed className="w-16 h-16 text-gray-400 mx-auto mb-2" />
+                              <div className="text-xs">{detail.image}</div>
+                            </div>
+                          ) : (
+                            <UtensilsCrossed className="w-24 h-24 text-gray-400" />
+                          )}
+                        </div>
                       </div>
 
                       <div className="space-y-4">

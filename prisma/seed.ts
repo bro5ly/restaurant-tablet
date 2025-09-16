@@ -96,7 +96,7 @@ async function main() {
       data: {
         name: setMenuNames[i],
         description: setDescriptions[i],
-        image: `set${i + 1}.jpg`,
+        image: i < 4 ? `/images/set${i + 1}.jpg` : `set${i + 1}.jpg`,
         price: 1200 + (i + 1) * 100,
         categoryId: categories[0].id,
         isRecommended: i === 0, // 最初のメニューをおすすめに設定
