@@ -29,7 +29,7 @@ const ModalPartySizeSelection = () => {
         partySize: selectedPartySize,
       });
       // ui_testページに遷移
-      router.push('/ui_test');
+      router.push("/tablet");
     }
   };
 

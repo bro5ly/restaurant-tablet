@@ -4,7 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { CreditCard, Banknote, Smartphone, Receipt, Users, ArrowLeft } from "lucide-react";
+import {
+  CreditCard,
+  Banknote,
+  Smartphone,
+  Receipt,
+  Users,
+  ArrowLeft,
+} from "lucide-react";
 import { useAtom } from "jotai";
 import { tableInfoAtom } from "@/atoms/atom";
 import { useRouter } from "next/navigation";
@@ -24,17 +31,18 @@ const PaymentPage = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        console.log('会計画面: 注文データを取得中...');
-        const response = await fetch(`/api/orders/table/${tableInfo.tableId}?includeServed=true`);
-        
+        console.log("会計画面: 注文データを取得中...");
+        const response = await fetch(
+          `/api/orders/table/${tableInfo.tableId}?includeServed=true`
+        );
+
         if (!response.ok) {
           throw new Error(`注文データの取得に失敗しました: ${response.status}`);
         }
-        
+
         const data = await response.json();
-        console.log('取得した注文データ:', data);
+        console.log("取得した注文データ:", data);
         setOrders(data);
-        
       } catch (error) {
         console.error("注文データ取得エラー:", error);
         // サンプルデータをフォールバックとして使用
@@ -48,7 +56,7 @@ const PaymentPage = () => {
               { menu: { name: "ドリンクバー" }, price: 280, quantity: 1 },
             ],
             total: 1260,
-          }
+          },
         ]);
       } finally {
         setLoading(false);
@@ -58,7 +66,10 @@ const PaymentPage = () => {
     fetchOrders();
   }, [tableInfo.tableId]);
 
-  const totalAmount = orders.reduce((sum, order) => sum + (order.total || order.subtotal || 0), 0);
+  const totalAmount = orders.reduce(
+    (sum, order) => sum + (order.total || order.subtotal || 0),
+    0
+  );
   const tax = Math.floor(totalAmount * 0.1);
   const finalAmount = totalAmount + tax;
 
@@ -96,7 +107,7 @@ const PaymentPage = () => {
               variant="ghost"
               size="sm"
               className="text-white hover:bg-red-700"
-              onClick={() => router.push('/ui_test')}
+              onClick={() => router.push("/tablet")}
             >
               <ArrowLeft className="w-4 h-4 mr-1" />
               メニューに戻る
@@ -133,39 +144,59 @@ const PaymentPage = () => {
                             注文 #{order.id}
                           </CardTitle>
                           <Badge variant="outline">
-                            {new Date(order.createdAt).toLocaleTimeString('ja-JP', {
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
+                            {new Date(order.createdAt).toLocaleTimeString(
+                              "ja-JP",
+                              {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              }
+                            )}
                           </Badge>
                         </div>
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-2">
-                          {(order.orderItems || order.items || []).map((item: any, index: number) => (
-                            <div
-                              key={index}
-                              className="flex justify-between items-center"
-                            >
-                              <div className="flex items-center space-x-2">
-                                <span className="text-sm">
-                                  {item.menu?.name || item.name || 'メニュー名不明'}
+                          {(order.orderItems || order.items || []).map(
+                            (item: any, index: number) => (
+                              <div
+                                key={index}
+                                className="flex justify-between items-center"
+                              >
+                                <div className="flex items-center space-x-2">
+                                  <span className="text-sm">
+                                    {item.menu?.name ||
+                                      item.name ||
+                                      "メニュー名不明"}
+                                  </span>
+                                  {item.quantity > 1 && (
+                                    <Badge
+                                      variant="secondary"
+                                      className="text-xs"
+                                    >
+                                      ×{item.quantity}
+                                    </Badge>
+                                  )}
+                                </div>
+                                <span className="text-sm font-medium">
+                                  ¥
+                                  {(
+                                    item.price * item.quantity
+                                  ).toLocaleString()}
                                 </span>
-                                {item.quantity > 1 && (
-                                  <Badge variant="secondary" className="text-xs">
-                                    ×{item.quantity}
-                                  </Badge>
-                                )}
                               </div>
-                              <span className="text-sm font-medium">
-                                ¥{(item.price * item.quantity).toLocaleString()}
-                              </span>
-                            </div>
-                          ))}
+                            )
+                          )}
                           <Separator className="my-2" />
                           <div className="flex justify-between items-center font-semibold">
                             <span>小計</span>
-                            <span>¥{(order.total || order.subtotal || 0).toLocaleString()}</span>
+                            <span>
+                              ¥
+                              {(
+                                order.total ||
+                                order.subtotal ||
+                                0
+                              ).toLocaleString()}
+                            </span>
                           </div>
                         </div>
                       </CardContent>
