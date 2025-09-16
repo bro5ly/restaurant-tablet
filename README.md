@@ -23,7 +23,7 @@
 1. リポジトリをクローン  
    ```bash
    git clone https://github.com/bro5ly/restaurant-tablet.git
-   cd repository
+   cd restaurant-tablet
    ```
 
 2. 依存関係をインストール  
